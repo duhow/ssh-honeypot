@@ -28,7 +28,7 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
     - name: Get version
       run: |
-        VERSION=`grep VERSION src/config.h | awk '{print $3}'`
+        VERSION=`grep VERSION src/config.h | awk '{print $3}' | tr -d '"'`
         echo VERSION=${VERSION} | tee -a ${GITHUB_ENV}
     - name: Docker meta
       id: meta
