@@ -1,6 +1,6 @@
 FROM alpine:3.12 AS build
 
-RUN apk add --update alpine-sdk clang git libssh-dev openssl openssh json-c-dev libssh2-dev \
+RUN apk add --update alpine-sdk clang git libssh-dev openssl openssh json-c-dev libssh2-dev libpcap-dev \
     && git clone --depth=1 --single-branch -j "$(nproc)" https://github.com/droberson/ssh-honeypot.git /git-ssh-honeypot \
     && cd /git-ssh-honeypot \
     && make -j "$(nproc)" \
@@ -11,9 +11,9 @@ FROM nlss/base-alpine:3.12
 
 COPY --from=build /git-ssh-honeypot/bin/ssh-honeypot /bin/ssh-honeypot
 
-RUN apk add --update --no-cache libssh-dev json-c-dev openssh \
+RUN apk add --update --no-cache libssh-dev json-c-dev openssh libpcap \
     && adduser --shell /bin/false --disabled-password --gecos "Honeycomb" --home "/home/honeycomb" "honeycomb" \
-    && mkdir -p /home/honeycomb/{log,rsa}
+    && mkdir -p /home/honeycomb/log /home/honeycomb/rsa
 
 COPY ["./rootfs", "/"]
 
